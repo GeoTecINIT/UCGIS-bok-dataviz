@@ -46,6 +46,7 @@ export function parseBOKData(bokJSON, v) {
     var node = {
       name: n.name,
       code: n.code,
+      nameShort: n.code,
       description: n.description,
       content: n.content,
       selfAssesment: n.selfAssesment,
@@ -58,7 +59,6 @@ export function parseBOKData(bokJSON, v) {
       contributors: [],
       sourceDocuments: []
     };
-    //  if (v == "current")
     allNodes[v].push(node);
     versionsCodes[v].push(n.code.toLowerCase());
 
@@ -126,21 +126,7 @@ export function parseBOKData(bokJSON, v) {
     }
   }
 
-  // fullBoK['current'] = allNodes[v];
-
   return rootNode;
-
-  /*   // TODO: Avoid circular dependencies - keep only 3 levels
-    allNodes[v][0].children.forEach(ch => {
-      ch.children.forEach(ch1 => {
-        ch1.children.forEach(ch2 => {
-          ch2.children = [];
-        })
-      })
-    });
-
-    // return clean root
-    return allNodes[v][0];*/
 
 }
 export function getCurrSelCode() {
@@ -215,15 +201,6 @@ export function visualizeBoKVersion(version) {
     (d3.hierarchy(bokData)
       .sum(d => d.value)
       .sort((a, b) => b.value - a.value));
-
-  /*     var color = d3.scaleLinear()
-        .domain([0, 5])
-        .range(["hsl(152,80%,80%)", "hsl(228,30%,40%)"])
-        .interpolate(d3.interpolateHcl); */
-
-  // var color = d3.interpolateRainbow();
-
-  //  ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b", "#e377c2", "#7f7f7f", "#bcbd22", "#17becf"]
 
   var root = pack(bokData);
 
@@ -338,23 +315,8 @@ window.visualizeBoKVersion = visualizeBoKVersion;
 export async function visualizeBOKData(url, version) {
 
   await getBoKData(url);
-  allVersions = Object.keys(fullBoK);
 
-  // Sort all Versions chronollogically  - current first one
-  allVersions.sort((a, b) => {
-    if (a == 'current')
-      return -1;
-    else if (b == 'current')
-      return 1;
-    else
-      return parseInt(b.split('v')[1]) - parseInt(a.split('v')[1]);
-  });
-
-  console.log("ALL VERSIONS " + allVersions)
-
-  allVersions.forEach(v => {
-    fullParsedBoK[v] = parseBOKData(fullBoK[v], v);
-  });
+  fullParsedBoK[version] = parseBOKData(fullBoK[version], version);
 
   d3.select('#' + TEMPLATE_IdGraph)
     .append("svg")
@@ -366,7 +328,7 @@ export async function visualizeBOKData(url, version) {
 
 }
 
-export function searchInBoK(string, searchCode, searchName, searchDes, searchSkills, searchSD) {
+export function searchInBoK(string, searchCode=true, searchName=true, searchDes=true, searchSkills=true, searchSD=false) {
   cleanSearchInBOK();
   cleanTextInfo();
 
@@ -461,40 +423,29 @@ export function displayConcept(d) {
   var mainNode = document.getElementById(TEMPLATE_IdText)
   mainNode.innerHTML = "";
 
-  var titleNode = document.createElement("h1");
+  var pNode = document.createElement("p");
+  pNode.innerHTML = `Permalink: <a href= 'https://ucgis-bok.web.app/${d.data.code}' target='blank'> https://ucgis-bok.web.app/${d.data.code}</a>`;
+  mainNode.appendChild(pNode);
+
+
+  var titleNode = document.createElement("h4");
   titleNode.id = "boktitle";
   titleNode.innerHTML = "[" + d.data.code + "] " + d.data.name; //display Name and shortcode of concept:
 
-  window.history.pushState({}, "Find In Bok", "/" + d.data.code);
-
-  // `<h2>Superconcept:</h2><div id='bokParentNode'><a style='color: #007bff; font-weight: 400; cursor: pointer;' class='concept-name' id='sc-${d.parent.data.code}' onclick='browseToConcept(\"${d.parent.data.code}\")'>[${d.parent.data.code}] ${d.parent.data.name}</a> </div><br>`
-
-  var pNode = document.createElement("p");
-  var iconCopy = '&nbsp;&nbsp;<i class=&#39;material-icons&#39;>content_copy</i> Copy';
-
-  // TODO: ADD TO BELOW THIS FOR LTB LINK  -----    document.getElementById("permalink").innerHTML = "&nbsp;&nbsp;Copied!";    --- document.getElementById("urilink").innerHTML = "${iconCopy}"
-  pNode.innerHTML = `Permalink: <a href= 'https://ucgis-bok.web.app/${d.data.code}' target='blank'> <i class="material-icons">open_in_new</i> https://ucgis-bok.web.app/${d.data.code}</a> <a id='permalink' style='color: #007bff; font-weight: 400; cursor: pointer;' onclick='navigator.clipboard.writeText(\"https://ucgis-bok.web.app/${d.data.code}\");  document.getElementById("permalink").innerHTML = "&nbsp;&nbsp;Copied!"; '>&nbsp;&nbsp; <i class='material-icons'>content_copy</i> Copy </a>`;
-  /*  
-   TODO: UNCOMMENT THIS FOR LTB LINK
-  if (d.data.uri) {
-      pNode.innerHTML += `<br> LTB Link: <a href= '${d.data.uri}' target='blank'> <i class="material-icons">open_in_new</i> ${d.data.uri}</a>  <a id='urilink' style='color: #007bff; font-weight: 400; cursor: pointer;' onclick='navigator.clipboard.writeText("${d.data.uri}"); document.getElementById("urilink").innerHTML = "&nbsp;&nbsp;Copied!"; document.getElementById("permalink").innerHTML = "${iconCopy}"'>&nbsp;&nbsp; <i class='material-icons'>content_copy</i> Copy </a>`;
-    } */
-  mainNode.appendChild(pNode);
-
   mainNode.appendChild(titleNode);
-  if (d.data.selfAssesment != " ") {
-    var statusNode = document.createElement("div");
-    statusNode.innerHTML = d.data.selfAssesment;
-    let statusText = document.createElement("div");
-    statusText.innerHTML = 'Status: ' + statusNode.innerText;
-    statusText.style = "margin-bottom: 10px;";
-    mainNode.appendChild(statusText);
-  }
+  /*   if (d.data.selfAssesment != " ") {
+      var statusNode = document.createElement("div");
+      statusNode.innerHTML = d.data.selfAssesment;
+      let statusText = document.createElement("div");
+      statusText.innerHTML = 'Status: ' + statusNode.innerText;
+      statusText.style = "margin-bottom: 10px;";
+      mainNode.appendChild(statusText);
+    } */
 
   //display description of concept
   var descriptionNode = document.createElement("div");
   if (d.data.description != null) {
-    var headline = "<h2>Description</h2>";
+    var headline = "<h5>Description</h5>";
     var currentTxt = "<div id='bokCurrentDescription'>" + d.data.description + "</div><br>";
     descriptionNode.innerHTML = headline + currentTxt;
   } else
@@ -502,20 +453,9 @@ export function displayConcept(d) {
 
   mainNode.appendChild(descriptionNode);
 
-  //display content of concept
-  var contentNode = document.createElement("div");
-  if (d.data.content != null && d.data.content != "") {
-    var headline = "<h2>Content</h2>";
-    var currentTxt = "<div id='bokCurrentContent'>" + d.data.content + "</div><br>";
-    contentNode.innerHTML = headline + currentTxt;
-  } else
-    contentNode.innerHTML = "";
-
-  mainNode.appendChild(contentNode);
-
   if (d.parent != null) {
     var parentNode = document.createElement("div");
-    parentNode.innerHTML = `<h2>Superconcept:</h2><div id='bokParentNode'><a style='color: #007bff; font-weight: 400; cursor: pointer;' class='concept-name' id='sc-${d.parent.data.code}' onclick='browseToConcept(\"${d.parent.data.code}\")'>[${d.parent.data.code}] ${d.parent.data.name}</a> </div><br>`;
+    parentNode.innerHTML = `<h5>Superconcept:</h5><div id='bokParentNode'><a style='color: #007bff; font-weight: 400; cursor: pointer;' class='concept-name' id='sc-${d.parent.data.code}' onclick='browseToConcept(\"${d.parent.data.code}\")'>[${d.parent.data.code}] ${d.parent.data.name}</a> </div><br>`;
     mainNode.appendChild(parentNode);
   }
 
@@ -529,18 +469,7 @@ export function displayConcept(d) {
   d.data.contributors && d.data.contributors.length > 0 ? displayLinksList(d.data.contributors, infoNode, "Contributors") : null;
   d.data.sourceDocuments && d.data.sourceDocuments.length > 0 ? displayLinksList(d.data.sourceDocuments, infoNode, "Source Documents") : null;
 
-  // display versions
-  displayVersions(infoNode, d.data.code);
   mainNode.appendChild(infoNode);
-
-  // show warnings if concept is obsolete and old version
-  if (currVersion != 'current') {
-    if (!versionsCodes['current'].includes(d.data.code.toLowerCase())) {
-      displayMsgObsoleteV(d.data.code, currVersion);
-    } else {
-      displayMsgOldV();
-    }
-  }
 
 };
 
@@ -548,7 +477,7 @@ export function displayConcept(d) {
 export function displayChildren(array, domElement, headline) {
 
   array.sort((a, b) => a.data.code.localeCompare(b.data.code));
-  var text = "<h2>" + headline + " [" + array.length + "] </h2><div><ul>";
+  var text = "<h5>" + headline + " [" + array.length + "] </h5><div><ul>";
   array.forEach(c => {
     text += "<a style='color: #007bff; font-weight: 400; cursor: pointer;' class='concept-name' id='sc-" + c.data.code + "' onclick='browseToConcept(\"" + c.data.code + "\")'>[" + c.data.code + '] ' + c.data.name + "</a> <br>";
   });
@@ -559,7 +488,7 @@ export function displayChildren(array, domElement, headline) {
 // displays links such as contributors and sourceDocuments
 export function displayLinksList(array, domElement, headline) {
 
-  var text = "<h2>" + headline + " [" + array.length + "] </h2><div><ul>";
+  var text = "<h5>" + headline + " [" + array.length + "] </h5><div><ul>";
   array.forEach(l => {
     text += "<a style='color: #007bff; font-weight: 400; cursor: pointer;' class='concept-name' href='" + l.url + "' target='_blank' >" + l.name + "</a> <br>";
   });
@@ -570,29 +499,9 @@ export function displayLinksList(array, domElement, headline) {
 // displays list such as skills
 export function displayTextList(array, domElement, headline) {
 
-  var text = "<h2>" + headline + " [" + array.length + "] </h2><div><ul>";
+  var text = "<h5>" + headline + " [" + array.length + "] </h5><div id='bokskills'><ul>";
   array.forEach(l => {
-    text += "<li>" + l + "</li>";
-  });
-  text += "</ul></div>";
-  domElement.innerHTML += text;
-};
-
-// displays list such as skills
-export function displayVersions(domElement, conceptCode) {
-
-  var text = "<h2> Versioning [" + allVersions.length + "] </h2><div><ul>";
-  allVersions.forEach(v => {
-
-    if (versionsCodes[v].includes(conceptCode.toLowerCase())) {
-      if (v == currVersion) // if current version is the same, make it not clickable
-        text += `<li> <strong> <i class="material-icons">east</i> You are viewing: ${v} (${fullBoK[v].updateDate})</strong></li>`;
-      else
-        text += `<li> <a style='color: #007bff; font-weight: 400; cursor: pointer;' onclick='visualizeBoKVersion(\"${v}\")' >${v} (${fullBoK[v].updateDate})</a></li>`;
-    } else {
-      text += `<li> ${v} (${fullBoK[v].updateDate}) (Concept does not exist in this version)</li>`;
-    }
-
+    text += "<li><a>" + l + "</a></li>";
   });
   text += "</ul></div>";
   domElement.innerHTML += text;

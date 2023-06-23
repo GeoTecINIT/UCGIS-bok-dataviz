@@ -1,7 +1,7 @@
 {
-  "name": "@ucgis/find-in-bok-dataviz",
+  "name": "@ucgis/find-in-bok-dataviz-tools",
   "version": "1.0.0",
-  "description": "UCGIS-bok-dataviz is an script to parse UCGIS BoK and visualize it in a circle packing d3 layout",
+  "description": "UCGIS-find-in-bok-dataviz-tools is an script to parse UCGIS BoK and visualize it in a circle packing d3 layout",
   "main": "index.js",
   "dependencies": {
     "d3": "^7.8.2"
@@ -21,15 +21,14 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/GeoTecINIT/UCGIS-find-in-bok-dataviz-versioning"
-      },
-      "exports": "./index.js",
-      "files": [
-        "src",
-        "*.md"
-      ],
-      "engines": {
-        "node": " >=14.13.1 || >=16.0.0"
-      }
-
+    "url": "https://github.com/GeoTecINIT/UCGIS-find-in-bok-dataviz-tools"
+  },
+  "exports": "./index.js",
+  "files": [
+    "src",
+    "*.md"
+  ],
+  "engines": {
+    "node": " >=14.13.1 || >=16.0.0"
+  }
 }

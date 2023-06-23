@@ -1,13 +1,13 @@
-# UCGIS-bok-dataviz
+# UCGIS-bok-dataviz-tools
 
-UCGIS-bok-dataviz is an script to parse a json-ld file and visualize it in a circle packing d3 layout.
+UCGIS-bok-dataviz-tools is an script to parse a json-ld file and visualize it in a circle packing d3 layout.
 
 ## Installation
 
 Using npm: 
 
 ```bash
-npm i @ucgis/find-in-bok-dataviz
+npm i @ucgis/find-in-bok-dataviz-tools
 ```
 
 ## Usage
@@ -28,10 +28,10 @@ In Javascript call the function visualizeBOKData(url, numVersion)
 
 
 ```javascript
-import * as bok from '@ucgis/find-in-bok-dataviz';
+import * as bok from '@ucgis/find-in-bok-dataviz-tools';
 [...]
 
-bok.visualizeBOKData('https://ucgis-bok-default-rtdb.firebaseio.com/', 1) // will render the graphical view and the textual view from the version 1 in database
+bok.visualizeBOKData('https://ucgis-bok-default-rtdb.firebaseio.com/', 'current') // will render the graphical view and the textual view from the version 1 in database
 
 ```
 
