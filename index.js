@@ -466,8 +466,8 @@ export function displayConcept(d) {
 
   d.data.demonstrableSkills && d.data.demonstrableSkills.length > 0 ? displayTextList(d.data.demonstrableSkills, infoNode, "Skills") : null;
 
-  d.data.contributors && d.data.contributors.length > 0 ? displayLinksList(d.data.contributors, infoNode, "Contributors") : null;
-  d.data.sourceDocuments && d.data.sourceDocuments.length > 0 ? displayLinksList(d.data.sourceDocuments, infoNode, "Source Documents") : null;
+  d.data.contributors && d.data.contributors.length > 0 ? displayLinksList(d.data.contributors, infoNode, "Contributors", "bokcontributors") : null;
+  d.data.sourceDocuments && d.data.sourceDocuments.length > 0 ? displayLinksList(d.data.sourceDocuments, infoNode, "Source Documents", "boksource") : null;
 
   mainNode.appendChild(infoNode);
 
@@ -486,9 +486,9 @@ export function displayChildren(array, domElement, headline) {
 };
 
 // displays links such as contributors and sourceDocuments
-export function displayLinksList(array, domElement, headline) {
+export function displayLinksList(array, domElement, headline, id) {
 
-  var text = "<h5>" + headline + " [" + array.length + "] </h5><div><ul>";
+  var text = "<h5>" + headline + " [" + array.length + "] </h5><div id='" + id + "'><ul>";
   array.forEach(l => {
     text += "<a style='color: #007bff; font-weight: 400; cursor: pointer;' class='concept-name' href='" + l.url + "' target='_blank' >" + l.name + "</a> <br>";
   });
