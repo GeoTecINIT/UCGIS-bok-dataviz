@@ -9,6 +9,7 @@ var Relationtype = {
   DEMONSTRATES: "demonstrates",
   SUBCONCEPT: "is subconcept of",
   SIMILARTO: "is similar to",
+  RELATEDTO: "is related to",
   PREREQUISITEOF: "is prerequisite of"
 };
 
@@ -57,7 +58,8 @@ export function parseBOKData(bokJSON, v) {
       parents: [],
       demonstrableSkills: [],
       contributors: [],
-      sourceDocuments: []
+      sourceDocuments: [],
+      relatedTo: []
     };
     allNodes[v].push(node);
     versionsCodes[v].push(n.code.toLowerCase());
@@ -77,8 +79,13 @@ export function parseBOKData(bokJSON, v) {
           allNodes[v][r.target].children.push(allNodes[v][r.source]);
         if (!allNodes[v][r.source].parents.includes(allNodes[v][r.target]))
           allNodes[v][r.source].parents.push(allNodes[v][r.target]);
-      } else {
-        console.log('Loop relation for concept: ' + r.target)
+      } 
+    } if (r.name === Relationtype.RELATEDTO) {
+      if (r.target != r.source) {
+        if (!allNodes[v][r.target].relatedTo.includes(allNodes[v][r.source]))
+          allNodes[v][r.target].relatedTo.push(allNodes[v][r.source]);
+        if (!allNodes[v][r.source].relatedTo.includes(allNodes[v][r.target]))
+          allNodes[v][r.source].relatedTo.push(allNodes[v][r.target]);
       }
     }
   });
@@ -258,7 +265,7 @@ export function visualizeBoKVersion(version) {
         maxLabelLength = 13,
         final = [arr[0]];
       for (var i = 1, j = 0; i < arr.length; i++) {
-        (final[j].length + arr[i].length < maxLabelLength) ? final[j] += ' ' + arr[i]: (j++, final[j] = arr[i]);
+        (final[j].length + arr[i].length < maxLabelLength) ? final[j] += ' ' + arr[i] : (j++, final[j] = arr[i]);
       }
       final.forEach((t, i) => d3.select(this).append('tspan').text(t).attr('dy', i ? '1em' : -0.5 * (j - 1) + 'em').attr('x', 0).attr('text-anchor', 'middle').attr('class', 'tspan' + i));
     })
@@ -328,7 +335,7 @@ export async function visualizeBOKData(url, version) {
 
 }
 
-export function searchInBoK(string, searchCode=true, searchName=true, searchDes=true, searchSkills=true, searchSD=false) {
+export function searchInBoK(string, searchCode = true, searchName = true, searchDes = true, searchSkills = true, searchSD = false) {
   cleanSearchInBOK();
   cleanTextInfo();
 
@@ -462,7 +469,10 @@ export function displayConcept(d) {
   var infoNode = document.createElement("div");
 
   //display subconcepts (if any):
-  d.children && d.children.length > 0 ? displayChildren(d.children, infoNode, "Subconcepts") : null;
+  d.data.children && d.data.children.length > 0 ? displayChildren(d.data.children, infoNode, "Subconcepts") : null;
+
+  // display related relation
+  d.data.relatedTo && d.data.relatedTo.length > 0 ? displayChildren(d.data.relatedTo, infoNode, "Related") : null;
 
   d.data.demonstrableSkills && d.data.demonstrableSkills.length > 0 ? displayTextList(d.data.demonstrableSkills, infoNode, "Skills") : null;
 
