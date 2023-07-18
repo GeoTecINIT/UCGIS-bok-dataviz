@@ -451,7 +451,7 @@ export function displayConcept(d) {
 
   //display description of concept
   var descriptionNode = document.createElement("div");
-  if (d.data.description != null) {
+  if (d.data.description != null && d.data.description != ' ') {
     var headline = "<h5>Description</h5>";
     var currentTxt = "<div id='bokCurrentDescription'>" + d.data.description + "</div><br>";
     descriptionNode.innerHTML = headline + currentTxt;
@@ -486,10 +486,10 @@ export function displayConcept(d) {
 //displays a list of nodes such as children
 export function displayChildren(array, domElement, headline) {
 
-  array.sort((a, b) => a.data.code.localeCompare(b.data.code));
+  array.sort((a, b) => a.code.localeCompare(b.code));
   var text = "<h5>" + headline + " [" + array.length + "] </h5><div><ul>";
   array.forEach(c => {
-    text += "<a style='color: #007bff; font-weight: 400; cursor: pointer;' class='concept-name' id='sc-" + c.data.code + "' onclick='browseToConcept(\"" + c.data.code + "\")'>[" + c.data.code + '] ' + c.data.name + "</a> <br>";
+    text += "<a style='color: #007bff; font-weight: 400; cursor: pointer;' class='concept-name' id='sc-" + c.code + "' onclick='browseToConcept(\"" + c.code + "\")'>[" + c.code + '] ' + c.name + "</a> <br>";
   });
   text += "</ul></div>";
   domElement.innerHTML += text;
