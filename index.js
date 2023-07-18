@@ -472,7 +472,7 @@ export function displayConcept(d) {
   d.data.children && d.data.children.length > 0 ? displayChildren(d.data.children, infoNode, "Subconcepts") : null;
 
   // display related relation
-  d.data.relatedTo && d.data.relatedTo.length > 0 ? displayChildren(d.data.relatedTo, infoNode, "Related") : null;
+  d.data.relatedTo && d.data.relatedTo.length > 0 ? displayChildren(d.data.relatedTo, infoNode, "Related concepts") : null;
 
   d.data.demonstrableSkills && d.data.demonstrableSkills.length > 0 ? displayTextList(d.data.demonstrableSkills, infoNode, "Skills") : null;
 
