@@ -20,7 +20,8 @@ const width = 932;
 const height = width;
 let view;
 
-let codesColors = [];
+let codesColors = ['AM', 'CP', 'CV', 'DA', 'DC', 'DM', 'FC', 'GS', 'KE', 'PD', 'UC'];
+let colorsHEX = ['#9999F8', '#AEB9C8', '#F19E70', '#4EAEEA', '#FBE7A3', '#B1CF95', '#F19E9C', '#439798', '#E4EEDC', '#A3C1E3', '#e4e4e4'];
 
 let selectedNodes = [];
 let allNodes = {};
@@ -64,12 +65,12 @@ export function parseBOKData(bokJSON, v) {
     allNodes[v].push(node);
     versionsCodes[v].push(n.code.toLowerCase());
 
-    if (!codesColors.includes(n.code.substring(0, 2)))
-      codesColors.push(n.code.substring(0, 2))
+/*     if (!codesColors.includes(n.code.substring(0, 2)))
+      codesColors.push(n.code.substring(0, 2)) */
 
   });
 
-  console.log(codesColors)
+ // console.log(codesColors)
 
   // add children - parent
   bokJSON.relations.forEach(r => {
@@ -229,10 +230,12 @@ export function visualizeBoKVersion(version) {
     .join("circle")
     .attr("fill", d => {
       let code = codesColors.indexOf(d.data.code.substring(0, 2));
+      return colorsHEX[code];
+/*       let code = codesColors.indexOf(d.data.code.substring(0, 2));
       while (code >= d3.schemeSet3.length)
         code = code - d3.schemeSet3.length;
 
-      return d3.schemeSet3[code];
+      return d3.schemeSet3[code]; */
     })
     .attr("stroke", COLOR_STROKE_DEFAULT)
     .attr("stroke-width", "0.2px")
@@ -431,7 +434,7 @@ export function displayConcept(d) {
   mainNode.innerHTML = "";
 
   var pNode = document.createElement("p");
-  pNode.innerHTML = `Permalink: <a href= 'https://ucgis-bok.web.app/${d.data.code}' target='blank'> https://ucgis-bok.web.app/${d.data.code}</a>`;
+  pNode.innerHTML = `Permalink: <a href= 'https://gistbok-bok.ucgis.org/${d.data.code}' target='blank'> https://gistbok-bok.ucgis.org/${d.data.code}</a>`;
   mainNode.appendChild(pNode);
 
 
