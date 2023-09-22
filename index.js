@@ -132,7 +132,7 @@ export function parseBOKData(bokJSON, v) {
   let rootNode;
 
   for (let i = 0; i < allNodes[v].length; i++) {
-    if (allNodes[v][i].parents.length == 0) {
+    if (allNodes[v][i].parents.length == 0 && allNodes[v][i].children.length > 0) {
       rootNode = allNodes[v][i];
       rootNodeCode = allNodes[v][i].code.toLowerCase();
       console.log("Version " + v + " root node " + i + " code " + rootNodeCode)
