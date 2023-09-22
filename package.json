@@ -1,6 +1,6 @@
 {
   "name": "@ucgis/find-in-bok-dataviz-tools",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "UCGIS-find-in-bok-dataviz-tools is an script to parse UCGIS BoK and visualize it in a circle packing d3 layout",
   "main": "index.js",
   "dependencies": {

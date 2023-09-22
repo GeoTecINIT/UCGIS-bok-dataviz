@@ -93,33 +93,39 @@ export function parseBOKData(bokJSON, v) {
 
   // add skills
   bokJSON.skills.forEach(skill => {
-    skill.concepts.forEach(skillconcept => {
-      allNodes[v][skillconcept].demonstrableSkills.push(skill.name);
-    });
+    if (skill.concepts && skill.concepts.length > 0) {
+      skill.concepts.forEach(skillconcept => {
+        allNodes[v][skillconcept].demonstrableSkills.push(skill.name ? skill.name : '');
+      });
+    }
   });
 
   // add contributors
   if (bokJSON.contributors) {
     bokJSON.contributors.forEach(con => {
-      con.concepts.forEach(c => {
-        allNodes[v][c].contributors.push({
-          name: con.name,
-          description: con.description,
-          url: con.url
+      if (con.concepts && con.concepts.length > 0) {
+        con.concepts.forEach(c => {
+          allNodes[v][c].contributors.push({
+            name: con.name ? con.name : '',
+            description: con.description ? con.description : '',
+            url: con.url ? con.url : ''
+          });
         });
-      });
+      }
     });
   }
 
   // add source documents
   bokJSON.references.forEach(ref => {
-    ref.concepts.forEach(c => {
-      allNodes[v][c].sourceDocuments.push({
-        name: ref.name,
-        description: ref.description,
-        url: ref.url
+    if (ref.concepts && ref.concepts.length > 0) {
+      ref.concepts.forEach(c => {
+        allNodes[v][c].sourceDocuments.push({
+          name: ref.name ? ref.name : '',
+          description: ref.description ? ref.description : '',
+          url: ref.url ? ref.url : ''
+        });
       });
-    });
+    }
   });
 
   // find root node
@@ -226,16 +232,10 @@ export function visualizeBoKVersion(version) {
   const node = svg.append("g")
     .selectAll("circle")
     .data(root)
-    // .data(root.descendants().slice(1))  // If we need to remove first element, in case root is duplicated
     .join("circle")
     .attr("fill", d => {
       let code = codesColors.indexOf(d.data.code.substring(0, 2));
       return colorsHEX[code];
-/*       let code = codesColors.indexOf(d.data.code.substring(0, 2));
-      while (code >= d3.schemeSet3.length)
-        code = code - d3.schemeSet3.length;
-
-      return d3.schemeSet3[code]; */
     })
     .attr("stroke", COLOR_STROKE_DEFAULT)
     .attr("stroke-width", "0.2px")
@@ -434,7 +434,7 @@ export function displayConcept(d) {
   mainNode.innerHTML = "";
 
   var pNode = document.createElement("p");
-  pNode.innerHTML = `Permalink: <a href= 'https://gistbok-bok.ucgis.org/${d.data.code}' target='blank'> https://gistbok-bok.ucgis.org/${d.data.code}</a>`;
+  pNode.innerHTML = `Permalink: <a href= 'https://gistbok-topics.ucgis.org/${d.data.code}' target='blank'> https://gistbok-topics.ucgis.org/${d.data.code}</a>`;
   mainNode.appendChild(pNode);
 
 
@@ -443,14 +443,6 @@ export function displayConcept(d) {
   titleNode.innerHTML = "[" + d.data.code + "] " + d.data.name; //display Name and shortcode of concept:
 
   mainNode.appendChild(titleNode);
-  /*   if (d.data.selfAssesment != " ") {
-      var statusNode = document.createElement("div");
-      statusNode.innerHTML = d.data.selfAssesment;
-      let statusText = document.createElement("div");
-      statusText.innerHTML = 'Status: ' + statusNode.innerText;
-      statusText.style = "margin-bottom: 10px;";
-      mainNode.appendChild(statusText);
-    } */
 
   //display description of concept
   var descriptionNode = document.createElement("div");
