@@ -177,6 +177,7 @@ export function browseToConcept(code) {
 
     } else {
       zoom(node[0]);
+      console.log(node[0])
       displayConcept(node[0]);
     }
   } else {
@@ -398,6 +399,8 @@ export function cleanSearchInBOK() {
 export function navigateToRoot() {
   console.log("Navigate to root");
   const root = d3.select('#node-' + rootNodeCode);
+  //new comment
+  console.log(root.data()[0])
   displayConcept(root.data()[0]);
 }
 
