@@ -132,12 +132,21 @@ export function parseBOKData(bokJSON, v) {
   let rootNode;
 
   for (let i = 0; i < allNodes[v].length; i++) {
-    if (allNodes[v][i].parents.length == 0 && allNodes[v][i].children.length > 0) {
+    console.log(allNodes[v][i].code);
+    //Situational code (for emergencies only)
+    if (allNodes[v][i].code === 'UCGIS'){
+      console.log('Root node now');      
+      rootNode = allNodes[v][i];
+      rootNodeCode = allNodes[v][i].code.toLowerCase();
+      break;
+    }
+      /*
+    //if (allNodes[v][i].parents.length == 0 && allNodes[v][i].children.length > 0) {
       rootNode = allNodes[v][i];
       rootNodeCode = allNodes[v][i].code.toLowerCase();
       console.log("Version " + v + " root node " + i + " code " + rootNodeCode)
-      break;
-    }
+      break;*/
+    //}
   }
 
   return rootNode;
@@ -177,6 +186,7 @@ export function browseToConcept(code) {
 
     } else {
       zoom(node[0]);
+      console.log(node[0])
       displayConcept(node[0]);
     }
   } else {
@@ -398,6 +408,8 @@ export function cleanSearchInBOK() {
 export function navigateToRoot() {
   console.log("Navigate to root");
   const root = d3.select('#node-' + rootNodeCode);
+  //new comment
+  console.log(root.data()[0])
   displayConcept(root.data()[0]);
 }
 
