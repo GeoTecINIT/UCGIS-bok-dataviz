@@ -64,6 +64,7 @@ export function parseBOKData(bokJSON, v) {
     };
     allNodes[v].push(node);
     versionsCodes[v].push(n.code.toLowerCase());
+    console.log(versionsCodes);
 
 /*     if (!codesColors.includes(n.code.substring(0, 2)))
       codesColors.push(n.code.substring(0, 2)) */
@@ -129,26 +130,32 @@ export function parseBOKData(bokJSON, v) {
   });
 
   // find root node
+ 
   let rootNode;
 
   for (let i = 0; i < allNodes[v].length; i++) {
-    console.log(allNodes[v][i].code);
-    //Situational code (for emergencies only)
-    if (allNodes[v][i].code === 'UCGIS'){
-      console.log('Root node now');      
+    //console.log(allNodes[v][i].code);
+    if (allNodes[v][i].parents.length == 0 && allNodes[v][i].children.length > 0) {
       rootNode = allNodes[v][i];
       rootNodeCode = allNodes[v][i].code.toLowerCase();
+      console.log("Version " + v + " root node " + i + " code " + rootNodeCode);
+      console.log(rootNode.children);
       break;
     }
-      /*
-    //if (allNodes[v][i].parents.length == 0 && allNodes[v][i].children.length > 0) {
-      rootNode = allNodes[v][i];
-      rootNodeCode = allNodes[v][i].code.toLowerCase();
-      console.log("Version " + v + " root node " + i + " code " + rootNodeCode)
-      break;*/
-    //}
   }
 
+
+    //Situational code (for emergencies only)
+  /*  let rootNode = allNodes[v].find(node => node.code === 'UCGIS');
+    if (rootNode) {
+        console.log('Root node now');
+        console.log(rootNode.code);
+        rootNodeCode = rootNode.code.toLowerCase();
+        // Puedes acceder a otras propiedades de rootNode según sea necesario
+    } else {
+        console.log('No se encontró el nodo con código "UCGIS"');
+    }
+*/
   return rootNode;
 
 }
