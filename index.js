@@ -129,17 +129,8 @@ export function parseBOKData(bokJSON, v) {
   });
 
   // find root node
-  let rootNode;
-
-  for (let i = 0; i < allNodes[v].length; i++) {
-    if (allNodes[v][i].parents.length == 0 && allNodes[v][i].children.length > 0) {
-      rootNode = allNodes[v][i];
-      rootNodeCode = allNodes[v][i].code.toLowerCase();
-      console.log("Version " + v + " root node " + i + " code " + rootNodeCode)
-      break;
-    }
-  }
-
+  let rootNode = allNodes[v].find(node => node.code === 'UCGIS');
+  rootNodeCode = rootNode.code.toLowerCase();
   return rootNode;
 
 }
